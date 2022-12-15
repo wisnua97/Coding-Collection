@@ -1,5 +1,24 @@
 # SQL-Data cleaning preparation
 
+-- 1st : delete country that have null code because it is not represent a single country
+delete from "Portofolio"."Info" where "code" is null;
+
+-- 2nd : drop column terorism because other column with same parameter (conflict_and_terrorism)
+already exist
+Alter table "Portofolio"."Info" drop column "terrorism";
+
+-- 3rd create new table that already filled 'null' value with '0' result
+CREATE TABLE "Portofolio".cleaned_info as 
+	Select country,code, year, 
+    	coalesce(meningitis,'0') as "meningitis",
+    	coalesce(alzheimer_disease,'0') as "alzheimer_disease",
+    	coalesce(parkinson_disease,'0') as "parkinson_disease",
+    	coalesce(nutritional_deficiency,'0') as "nutritional_deficiency",
+    	coalesce(malaria,'0') as "malaria",
+    	coalesce(drowning,'0') as "drowning",
+    	coalesce(interpersonal_violence,'0') as "interpersonal_violence",
+    	coalesce(maternal_disorders, '0') as "maternal_disorders",
+    	coalesce(hiv_aids,'0') as "hiv_aids",
     	coalesce(drug_use_disorders,'0') as "drug_use_disorders",
     	coalesce(tuberculosis,'0') as "tuberculosis",
     	coalesce(cardiovascular_diseases,'0') as "cardiovascular_diseases",
