@@ -1,0 +1,60 @@
+1st. Data upload to SQL
+
+-- Table: Portofolio2.bank
+
+-- DROP TABLE IF EXISTS "Portofolio2"."bank";
+
+CREATE TABLE IF NOT EXISTS "Portofolio2"."bank"
+(
+    customer_id character varying COLLATE pg_catalog."default",
+    credit_score character varying COLLATE pg_catalog."default",
+    country character varying COLLATE pg_catalog."default",
+    gender character varying COLLATE pg_catalog."default",
+    age character varying COLLATE pg_catalog."default",
+    tenure character varying COLLATE pg_catalog."default",
+    balance character varying COLLATE pg_catalog."default",
+    products_number character varying COLLATE pg_catalog."default",
+    credit_card character varying COLLATE pg_catalog."default",
+    active_member character varying COLLATE pg_catalog."default",
+    estimated_salary character varying COLLATE pg_catalog."default",
+    churn character varying COLLATE pg_catalog."default"
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS "Portofolio2"."bank"
+    OWNER to postgres;
+
+Copy "Portofolio2"."bank" 
+("customer_id","credit_score","country","gender","age","tenure","balance","products_number",
+"credit_card","active_member","estimated_salary","churn") 
+from 'C:\Users\Admin\Downloads\Portofolio\Bank\Bank Customer Churn Prediction.csv' WITH DELIMITER ',' CSV HEADER QUOTE '''' ;
+
+select * from "Portofolio2"."bank
+
+2nd. Data Cleaning
+
+select "bank"."customer_id", "bank"."tenure", 
+	case
+		when "bank"."tenure"::int >= 0 and "bank"."tenure"::int <= 3 then 'S'
+		when "bank"."tenure"::int >= 4 then 'L'
+		else 'category unknown'
+		end as "tenure category",
+"bank"."age","bank"."gender", "bank"."country", "bank"."credit_score",
+	case
+		when "credit_score"::int >= 300 and "credit_score"::int <= 579 then 'P'
+		when "credit_score"::int >= 580 and "credit_score"::int <= 669 then 'F'
+		when "credit_score"::int >= 670 and "credit_score"::int <= 739 then 'G'
+		when "credit_score"::int >= 740 and "credit_score"::int <= 799 then 'VG'
+		when "credit_score"::int >= 800 then 'E'
+		else 'category unknown'
+		end as "credit score category",
+"bank"."balance", "bank"."estimated_salary"
+from "Portofolio2"."bank"
+where "credit_score"::int >= 100 and "tenure"::int >=1 and "estimated_salary"::float >= 150000 and balance::float >= 150000 
+Group by "bank"."customer_id", "bank"."tenure", "bank"."age","bank"."gender", 
+"bank"."country", "bank"."credit_score", "bank"."balance", "bank"."estimated_salary"
+order by "bank"."customer_id", "bank"."tenure", "bank"."age","bank"."gender", 
+"bank"."country", "bank"."credit_score", "bank"."balance", "bank"."estimated_salary" asc ;
